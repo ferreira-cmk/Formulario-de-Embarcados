@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+.tela{
+    display: flex;
+    flex-direction: column;
+}
+.listaEmbarcados{
+    display: flex;
+    gap: 10px;
+}
+.p{
+    width: 150px;
+    height: 150px;
+}
+</style>
+<body>
+    <p>
+        <h2>Adicionar Embarcado:</h2>
+        <section class="tela">
+        <p>Comprimento: <input type="text" id="cm"></p>
+        <p>Potência: <input type="text" id="pt"></p>
+        <p>Qual Motorização:</p>
+        <input type="radio" name="motorizacao" id="popa" value="Motor popa">
+        <label for="popa">Motor de Popa</label>
+        <input type="radio" name="motorizacao" id="inbord" value="Motor inbord">
+        <label for="inbord">Motor Inbord</label>
+        <input type="radio" name="motorizacao" id="ibo" value="Motor inboard-outboard">
+        <label for="ibo">Motor Inboard-Outboard (IBO)</label>
+        <input type="radio" name="motorizacao" id="eletrico" value="Motor eletrico">
+        <label for="eletrico">Motor Eletrico</label>
+        <input type="radio" id="hidrico" name="motorizacao" value="Motor híbrido">
+        <label for="hidrico">Motor Híbrido</label>
+        <input type="radio" id="diesel" name="motorizacao" value="Motor diesel">
+        <label for="diesel">Motor Diesel</label>
+    </p>
+    <p>
+        <label>Possui Conves Aberto:</label>
+        <input type="radio"  name="possuiConvesAberto" id="sim" value="Sim">
+        <label for="">Sim</label>
+        <input type="radio"  name="possuiConvesAberto" id="nao" value="Não">
+        <label for="">Não</label>
+    </p>
+    <p>
+        <label>Possui Cabine habitavel:</label>
+        <input type="radio"  name="possuiCabinehabitavel" id="sim" value="Sim">
+        <label for="">Sim</label>
+        <input type="radio"  name="possuiCabinehabitavel" id="nao" value="Não">
+        <label for="">Não</label>
+    </p>
+    </section>
+
+    <button type="button" onclick="adicionarEmbarcado()">Adicionar Embarcado</button>
+
+    <section id="listaEmbarcados"></section>
+
+    <script>
+        listaDeEmbarcados = []
+
+        const adicionarEmbarcado = () => {
+            const comprimento = parseFloat(document.getElementById('cm').value)
+            const potencia = parseFloat(document.getElementById('pt').value)
+
+            const motorizacao = document.querySelector('input[name="motorizacao"]:checked').value
+            const possuiConvesAberto = document.querySelector('input[name="possuiConvesAberto"]:checked').value
+            const possuiCabinehabitavel = document.querySelector('input[name="possuiCabinehabitavel"]:checked').value
+            const embarcadoMiudo = verificarEmbarcadoMiudo(comprimento,potencia,possuiCabinehabitavel, possuiConvesAberto);
+
+            listaDeEmbarcados.push({
+                comprimento:comprimento,
+                potencia:potencia,
+                motorizacao:motorizacao,
+                possuiConvesAberto: possuiConvesAberto,
+                possuiCabinehabitavel: possuiCabinehabitavel,
+                embarcadoMiudo : embarcadoMiudo,
+            })
+            apagar()
+            exibirEmbarcados();
+        }
+        const verificarEmbarcadoMiudo = (comprimento, potencia, possuiCabinehabitavel, possuiConvesAberto) =>{
+            if(comprimento <= 5){
+                return "Miúdo";
+            } else if (comprimento <= 8 && potencia < 50 && possuiConvesAberto == true && !possuiCabinehabitavel){
+                return "Miúdo";
+            } else if (comprimento <= 8 && potencia < 50 && !possuiConvesAberto && !possuiCabinehabitavel){
+                return "Miúdo";
+            }else{
+                return "Embarcado não miúdo";
+            }
+        }
+        const apagar = ()=>{
+            const comprimento = document.getElementById('cm').value = ""
+            const potencia = document.getElementById('pt').value = ""
+            const radios = document.querySelectorAll('input[type="radio"]')
+            radios.forEach(radio => {
+                radio.checked = false
+        })
+        }
+        const exibirEmbarcados = () =>{
+
+            listaEmbarcados = document.getElementById('listaEmbarcados');
+            listaEmbarcados.innerHTML = '<h2>Lista de Embarcados Adicionados<h2/>'
+
+            listaDeEmbarcados.forEach(embarcado => {
+
+                const div = document.createElement('div');
+                div.classList.add('listaEmbarcados');
+                div.innerHTML = `
+                <p class = "p">Comprimneto: ${embarcado.comprimento}</p>
+                <p class = "p">Potencia: ${embarcado.potencia}</p>
+                <p class = "p">Motorização: ${embarcado.motorizacao}</p>
+                <p class = "p">Possui Conves Aberto: ${embarcado.possuiConvesAberto}</p>
+                <p class = "p">Possui Cabine Habitavel: ${embarcado.possuiCabinehabitavel}</p>
+                <p class = "p">Embarcado Miúdo: ${embarcado.embarcadoMiudo}</p>
+                `
+                listaEmbarcados.appendChild(div);
+            });
+        }
+    </script>
+</body>
+</html>
